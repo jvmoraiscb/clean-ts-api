@@ -28,21 +28,33 @@ class AddStudentService implements AddStudentUseCase {
     }
 }
 
+type SutTypes = {
+    sut: AddStudentService
+    repoMock: AddStudentRepositoryMock
+}
+
+const makeSut = (): SutTypes => {
+    const repoMock = new AddStudentRepositoryMock()
+    const sut = new AddStudentService(repoMock) // System Under Test
+    return {
+        sut,
+        repoMock
+    }
+}
+
+const makeFakeStudent = (): Student => ({
+    id: "any_id",
+    name: "any_name",
+    age: 20,
+    password: "any_password"
+})
+
 describe('add-student-service', () =>{
     it('should call repository with right data', async() =>{
-        const repo = new AddStudentRepositoryMock()
-        const sut = new AddStudentService(repo) // System Under Test
+        const {repoMock, sut} = makeSut()
 
-        const fakeStudent: Student = {
-            id: "any_id",
-            name: "any_name",
-            age: 20,
-            password: "any_password"
+        await sut.add(makeFakeStudent())
 
-        }
-
-        await sut.add(fakeStudent)
-
-        expect(repo.input).toEqual(fakeStudent)
+        expect(repoMock.input).toEqual(makeFakeStudent())
     })
 })
