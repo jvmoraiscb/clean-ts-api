@@ -1,7 +1,4 @@
-import { Student }                  from "../../src/domain/entities"
 import { AddStudentUseCase }        from "../../src/domain/useCases"
-import { AddStudentRepository }     from "../../src/application/repositories"
-import { Encrypter, IdGenerator }   from "../../src/application/providers"
 import { AddStudentService }        from "../../src/application/services"
 import { StudentMinorError }        from "../../src/domain/errors"
 
