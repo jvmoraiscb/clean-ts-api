@@ -1,82 +1,12 @@
-type Student = {
-    id: string
-    name: string
-    age: number
-    password: string
-}
+import { Student }                  from "../../src/domain/entities"
+import { AddStudentUseCase }        from "../../src/domain/useCases"
+import { AddStudentRepository }     from "../../src/application/repositories"
+import { Encrypter, IdGenerator }   from "../../src/application/providers"
+import { AddStudentService }        from "../../src/application/services"
+import { StudentMinorError }        from "../../src/domain/errors"
 
-interface AddStudentUseCase{
-    add(student: AddStudentUseCase.Props):Promise<AddStudentUseCase.Result>
-}
+import { AddStudentRepositoryMock, EncrypterMock, IdGeneratorMock, makeFakeStudentInput } from "./mocks"
 
-export namespace AddStudentUseCase{
-    export type Props = Omit<Student, 'id'>
-    export type Result = Omit<Student, 'password'>
-}
-
-interface AddStudentRepository{
-    add(student: Student):Promise<Student>
-}
-
-interface IdGenerator {
-    generate() : string
-}
-
-interface Encrypter{
-    encrypt(plainText: string): string
-}
-
-class EncrypterMock implements Encrypter{
-    input = ''
-    output = 'encrypter output'
-    
-    encrypt(plainText: string): string{
-        this.input = plainText
-        return this.output
-    }
-}
-
-class IdGeneratorMock implements IdGenerator{
-    output = 'id_generator_out'
-    generate(): string{
-        return this.output
-    }
-}
-
-class AddStudentRepositoryMock implements AddStudentRepository{
-    input = null
-    async add(student: Student): Promise<Student> {
-        this.input = student
-        return null
-    }
-}
-
-class AddStudentService implements AddStudentUseCase {
-    constructor(
-        private readonly addStudentRepo: AddStudentRepository,
-        private readonly encrypter: Encrypter,
-        private readonly idGenerator: IdGenerator
-    ){}
-
-    async add(student: AddStudentUseCase.Props): Promise<AddStudentUseCase.Result> {
-        if(student.age < 18) throw new StudentMinorError()
-
-        const encryptedPassword = this.encrypter.encrypt(student.password)
-        
-        const newStudent: Student = {
-            ...student,
-            id: this.idGenerator.generate(),
-            password: encryptedPassword
-        }
-
-        await this.addStudentRepo.add(newStudent)
-        return {
-            id: newStudent.id,
-            age: newStudent.age,
-            name: newStudent.name
-        }
-    }
-}
 
 type SutTypes = {
     sut: AddStudentService
@@ -95,19 +25,6 @@ const makeSut = (): SutTypes => {
         repoMock,
         encrypterMock,
         idGeneratorMock
-    }
-}
-
-const makeFakeStudentInput = (): AddStudentUseCase.Props => ({
-    name: "any_name",
-    age: 20,
-    password: "any_password"
-})
-
-class StudentMinorError extends Error{
-    constructor(){
-        super('minor student not allowed!')
-        this.name = 'StudentMinorError'
     }
 }
 
