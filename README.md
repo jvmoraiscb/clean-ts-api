@@ -1,4 +1,4 @@
 # clean-ts-api
 
 ## preparing the environment:
-yarn add typescript jest @types/jest -D
+yarn add ts-node-dev express typescript jest uuid bcryptjs @types/jest @types/uuid @types/bcrypt @types/express -D

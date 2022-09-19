@@ -1,5 +1,6 @@
 import { StudentMinorError }        from "../../../src/domain/errors"
 import { AddStudentController }     from "../../../src/presentation/controllers"
+import { Validator }                from "../../../src/presentation/protocols"
 import { makeFakeStudentInput }     from "../../application/mocks"
 import { AddStudentServiceMock }    from "../mocks"
 
@@ -8,9 +9,16 @@ type SutTypes = {
     serviceMock: AddStudentServiceMock
 }
 
+class ValidatorMock implements Validator {
+    validate(input: any): Error {
+        return null
+    }
+}
+
 const makeSut = (): SutTypes => {
     const serviceMock = new AddStudentServiceMock()
-    const sut = new AddStudentController(serviceMock)
+    const validatorMock = new ValidatorMock()
+    const sut = new AddStudentController(serviceMock, validatorMock)
     return {
         sut,
         serviceMock
