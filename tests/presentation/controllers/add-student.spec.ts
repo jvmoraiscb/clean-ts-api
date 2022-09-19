@@ -1,56 +1,7 @@
-import { StudentMinorError }    from "../../../src/domain/errors"
-import { AddStudentUseCase }    from "../../../src/domain/useCases"
-import { makeFakeStudentInput } from "../../application/mocks"
-
-type HttpResponse = {
-    statusCode: number
-    body: any
-}
-
-interface Controller<T = any> {
-    handle(data: T): Promise<HttpResponse>
-}
-
-class AddStudentServiceMock implements AddStudentUseCase{
-    output: AddStudentUseCase.Result = {
-        name: 'any_name',
-        age: 20,
-        id: 'any_id'
-    }
-    async add(student: AddStudentUseCase.Props): Promise<AddStudentUseCase.Result> {
-        return this.output
-    }
-}
-
-const ok = (data: any): HttpResponse => ({
-    body: data,
-    statusCode: 200
-})
-
-const badRequest = (error: Error): HttpResponse => ({
-    body: error,
-    statusCode: 400
-})
-
-const serverError = (error: Error): HttpResponse => ({
-    body: error,
-    statusCode: 500
-})
-
-class AddStudentController implements Controller<AddStudentUseCase.Props>{
-    constructor(private readonly service: AddStudentUseCase) {}
-    
-    async handle(data: AddStudentUseCase.Props): Promise<HttpResponse> {
-        try{
-            const addedStudent = await this.service.add(data)
-            return ok(addedStudent)
-        } catch (error) {
-            if(error instanceof StudentMinorError)
-                return badRequest(error)
-            return serverError(error)
-        }
-    }
-}
+import { StudentMinorError }        from "../../../src/domain/errors"
+import { AddStudentController }     from "../../../src/presentation/controllers"
+import { makeFakeStudentInput }     from "../../application/mocks"
+import { AddStudentServiceMock }    from "../mocks"
 
 type SutTypes = {
     sut: AddStudentController,
