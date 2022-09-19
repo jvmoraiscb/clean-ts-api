@@ -1,6 +1,6 @@
-import { AddStudentUseCase }        from "../../src/domain/useCases"
-import { AddStudentService }        from "../../src/application/services"
-import { StudentMinorError }        from "../../src/domain/errors"
+import { AddStudentUseCase } from "../../src/domain/useCases"
+import { AddStudentService } from "../../src/application/services"
+import { StudentMinorError } from "../../src/domain/errors"
 
 import { AddStudentRepositoryMock, EncrypterMock, IdGeneratorMock, makeFakeStudentInput } from "./mocks"
 
